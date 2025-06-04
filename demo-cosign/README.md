@@ -150,7 +150,7 @@ In Openbao quando si creano oggetti, hanno tutti come default la policy "deny al
 
 La policy viene salvata in un file hcl e poi applicata. Creaimo il file `cosign-read-policy.hcl` del tipo
 
-```json
+```hcl
 path "secret/data/Cosign/*" {
   capabilities = ["read"]
 }
