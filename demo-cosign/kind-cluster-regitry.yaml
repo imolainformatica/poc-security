@@ -1,0 +1,30 @@
+# Configurazione del cluster Kind con un registro Docker interno
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:5005"]
+      endpoint = ["http://registry:5000"]
+nodes:
+  - role: control-plane
+    extraMounts:
+      - hostPath: /var/lib/docker
+        containerPath: /var/lib/docker
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 8080
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 8443
+        protocol: TCP
+  - role: worker
+    extraMounts:
+      - hostPath: /var/lib/docker
+        containerPath: /var/lib/docker
+  - role: worker
+    extraMounts:
+      - hostPath: /var/lib/docker
+        containerPath: /var/lib/docker
+networking:
+  apiServerAddress: "127.0.0.1"
+  apiServerPort: 6443

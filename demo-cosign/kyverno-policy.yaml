@@ -1,0 +1,33 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: check-image
+  annotations:
+    kyverno.io/deny-message: "Impossibile rilasciare immagini non autorizzate!"
+spec:
+  webhookConfiguration:
+    failurePolicy: Fail
+    timeoutSeconds: 30
+  background: false
+  rules:
+    - name: check-image
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod
+            namespaces:
+              - kyverno-app
+      verifyImages:
+      - imageReferences:
+        - "*"
+        failureAction: Enforce
+        attestors:
+        - count: 1
+          entries:
+          - keys:
+              publicKeys: |-
+                -----BEGIN PUBLIC KEY-----
+                MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEedA7g/3q1KZCdSjBkQDCNOce3gUO
+                DGVLdAm4cU/MBFTwzlwGZPmt381TThL9C+xTVX1/RTKWeCZWAH/3Qh//Lg==
+                -----END PUBLIC KEY-----
